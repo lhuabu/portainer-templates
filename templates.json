@@ -1,6 +1,6 @@
 [
   {
-    "type": 3,
+    "type": "stack",
     "title": "GPU Server 1x",
     "description": "1 GPU, 64GB RAM - LLM training and inference with PyTorch",
     "categories": ["AI/ML", "GPU"],
@@ -11,7 +11,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "GPU Server 2x",
     "description": "2 GPUs, 128GB RAM - Multi-GPU training with Axolotl",
     "categories": ["AI/ML", "GPU"],
@@ -22,7 +22,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "GPU Server 3x",
     "description": "3 GPUs, 192GB RAM - Multi-GPU training with DeepSpeed",
     "categories": ["AI/ML", "GPU"],
@@ -33,7 +33,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "GPU Server 4x",
     "description": "4 GPUs, 256GB RAM - Full multi-GPU training with vLLM",
     "categories": ["AI/ML", "GPU"],
@@ -44,7 +44,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "Web Server Small",
     "description": "1 CPU, 1GB RAM - Basic web hosting with PHP and Node.js",
     "categories": ["Web", "CPU"],
@@ -55,7 +55,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "Web Server Medium",
     "description": "2 CPU, 4GB RAM - Standard web hosting with PHP, Node.js, and Composer",
     "categories": ["Web", "CPU"],
@@ -66,7 +66,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "Web Server Large",
     "description": "4 CPU, 16GB RAM - High-performance web hosting with Redis and Imagick",
     "categories": ["Web", "CPU"],
@@ -77,7 +77,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "Web Server XLarge",
     "description": "8 CPU, 64GB RAM - Enterprise web hosting",
     "categories": ["Web", "CPU"],
@@ -88,7 +88,7 @@
     }
   },
   {
-    "type": 3,
+    "type": "stack",
     "title": "Web Server XXLarge",
     "description": "16 CPU, 100GB RAM - Maximum performance web hosting",
     "categories": ["Web", "CPU"],
