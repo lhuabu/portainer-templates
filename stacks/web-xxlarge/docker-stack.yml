@@ -1,0 +1,60 @@
+services:
+  __TEMPLATE_NAME__:
+    image: ubuntu:24.04
+    container_name: __CONTAINER_NAME__
+    hostname: __CONTAINER_NAME__
+    restart: unless-stopped
+    ports:
+      - "__WEB_PORT__:80"
+      - "__SSL_PORT__:443"
+      - "__SSH_PORT__:22"
+    environment:
+      - USERNAME=__USERNAME__
+      - PASSWORD=__PASSWORD__
+    volumes:
+      - /data2:/data2
+      - __CONTAINER_NAME___www:/var/www/html
+      - __CONTAINER_NAME___nginx:/etc/nginx/sites-available
+    deploy:
+      resources:
+        limits:
+          cpus: '16'
+          memory: 100G
+    command: >
+      bash -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server nginx php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-zip php-redis php-imagick php-sodium php-bcmath php-gmp nodejs npm curl git composer wget &&
+      adduser -m -s /bin/bash -G sudo $${USERNAME} &&
+      echo '$${USERNAME}:$${PASSWORD}' | chpasswd &&
+      mkdir -p /run/sshd /data2/$${USERNAME}/www /data2/$${USERNAME}/logs /data2/$${USERNAME}/backups /data2/$${USERNAME}/uploads /data2/$${USERNAME}/cache /data2/$${USERNAME}/tmp &&
+      chown -R $${USERNAME}:$${USERNAME} /data2/$${USERNAME} &&
+      echo '<?php phpinfo(); ?>' > /data2/$${USERNAME}/www/index.php &&
+      cat > /etc/nginx/sites-available/default << 'NGINX_EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.php index.html index.htm;
+    server_name _;
+    location / {
+        try_files $$uri $$uri/ =404;
+    }
+    location ~ \\.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+    }
+}
+NGINX_EOF
+      /usr/sbin/sshd -D"
+    healthcheck:
+      test: ["CMD", "pgrep", "-x", "sshd"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    name: web_network
+    driver: bridge
+
+volumes:
+  __CONTAINER_NAME___www:
+  __CONTAINER_NAME___nginx:

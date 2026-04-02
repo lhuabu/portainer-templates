@@ -1,0 +1,49 @@
+services:
+  __TEMPLATE_NAME__:
+    image: ubuntu:24.04
+    container_name: __CONTAINER_NAME__
+    hostname: __CONTAINER_NAME__
+    restart: unless-stopped
+    ports:
+      - "__SSH_PORT__:22"
+      - "8000:8000"
+    environment:
+      - USERNAME=__USERNAME__
+      - PASSWORD=__PASSWORD__
+      - GPU_COUNT=1
+    volumes:
+      - /data1:/data1
+      - __CONTAINER_NAME___data:/workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+        limits:
+          memory: 64G
+    command: >
+      bash -c "apt-get update && apt-get install -y openssh-server python3 python3-pip curl git &&
+      useradd -m -s /bin/bash -G sudo $${USERNAME} &&
+      echo '$${USERNAME}:$${PASSWORD}' | chpasswd &&
+      sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config &&
+      sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
+      mkdir -p /run/sshd /workspace /data1/$${USERNAME} &&
+      ln -sf /data1/$${USERNAME} /workspace/data &&
+      pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu121 &&
+      pip3 install transformers[torch] accelerate bitsandbytes peft vllm fastapi uvicorn &&
+      /usr/sbin/sshd -D"
+    healthcheck:
+      test: ["CMD", "pgrep", "-x", "sshd"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  default:
+    name: gpu_network
+    driver: bridge
+
+volumes:
+  __CONTAINER_NAME___data:
